@@ -4,7 +4,7 @@ namespace App\services;
 use App\Models\Dispatcher;
 use App\Models\Notification;
 
-class DeclinedService {
+class DispatcherDeclinedService {
 
     public function __construct(
          private Dispatcher $dispatcher,

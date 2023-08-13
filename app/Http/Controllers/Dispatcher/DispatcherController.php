@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Dispatcher;
 
 use App\Http\Controllers\Controller;
-use App\Models\Dispatcher;
 use App\Models\Notification;
-use App\services\DeclinedService;
-use Illuminate\Http\Request;
-use Illuminate\Notifications\Notification as NotificationsNotification;
+use App\services\DispatcherDeclinedService;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -45,7 +42,7 @@ class DispatcherController extends Controller
 
     public function declined($orderId,$userId,$dispatcherId)
     {
-        $declinedService = app(DeclinedService::class);
+        $declinedService = app(DispatcherDeclinedService::class);
         $declinedService->declined($orderId,$userId,$dispatcherId);
         return back();
     }

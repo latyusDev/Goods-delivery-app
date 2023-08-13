@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserMiddleware
+class UserStatusMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,15 +17,17 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = User::whereEmail($request->email)->first();
-        if($user){
-
-            if($user->deleted_at === null){
-    
-                return back()->with('msg', 'You have been banned');
-            }
+        $user = User::whereEmail(auth()->user()->email)
+                    ->first();
+        if($user->status)
+        {
+            Auth::guard('web')->logout();
+            return redirect()->route('user.login')->withErrors(['email'=>'Your account was banned on '
+                   .$user->updated_at-> toDayDateTimeString().
+                   ' contact the Manager for more info'])
+                          ->onlyInput('email');
+         
         }
-        
         return $next($request);
     }
 }

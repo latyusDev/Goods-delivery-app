@@ -68,7 +68,8 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'dispatcher' => \App\Http\Middleware\DispatcherMiddleware::class,
         'user' => \App\Http\Middleware\UserMiddleware::class,
-        'status' => \App\Http\Middleware\CheckMiddleware::class,
+        'userStatus' => \App\Http\Middleware\UserStatusMiddleware::class,
+        'dispatcherStatus' => \App\Http\Middleware\DispatcherStatusMiddleware::class,
         'adminStatus' => \App\Http\Middleware\AdminStatusMiddleware::class
 
     ];

@@ -24,26 +24,16 @@ class AdminAuthController extends Controller
         $address['addresable_type'] = Admin::class;
         $address['addresable_id'] = $admin->id;
         Address::create($address);
-        
-        Auth()->guard('admin')->login($admin);
-        return redirect('/admin/index');
+        Auth::guard('admin')->login($admin);
+        return redirect()->route('admin.index');
     }
 
     public function login(Request $request)
     {
-        $admin = Admin::whereEmail($request->email)->first();
-        if($admin == null){
-            return back()->withErrors(['email'=>'Admin credentials not found'])
-            ->onlyInput('email');
-        }
-       else if($admin->status){
-            return back()->withErrors(['email'=>'You have been banned'])
-                         ->onlyInput('email');
-        }
-       else if(Auth::guard('admin')->attempt($request->only('email',
-         'password'))){
+       if(Auth::guard('admin')->attempt($request->only('email','password')))
+       {
             $request->session()->regenerate();
-            return redirect('/admin/index');
+            return redirect()->route('admin.index');
         }
         return back()->withErrors(['email'=>'Admin credentials not found'])
                      ->onlyInput('email');
@@ -54,8 +44,7 @@ class AdminAuthController extends Controller
     {
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-
-        return redirect('/admin/login')->with('msg', 'You are Logged out');
+        return redirect()->route('admin.login')->with('msg', 'You are Logged out');
     }
 
 }

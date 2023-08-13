@@ -1,14 +1,12 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminAuthController as adminAuth;
+use App\Http\Controllers\Admin\AdminAuthController as AdminAuth;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Dispatcher\DispatcherAuthController as dispatcherAuth;
+use App\Http\Controllers\Dispatcher\DispatcherAuthController as DispatcherAuth;
 use App\Http\Controllers\Dispatcher\DispatcherController;
 use App\Http\Controllers\Order\OrderController;
-use App\Http\Controllers\User\UserAuthController as userAuth;
+use App\Http\Controllers\User\UserAuthController as UserAuth;
 use App\Http\Controllers\User\UserController;
-use App\Models\Admin;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -24,14 +22,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('user.login');
 });
 
-Route::group(['prefix'=>'user','controller'=>userAuth::class
+Route::group(['prefix'=>'user','controller'=>UserAuth::class
 ],(function(){
 
     Route::post('register', 'register');
-    Route::post('/login', 'login')->middleware('status');
+    Route::post('/login', 'login');
     Route::post('/logout', 'logout');
 }));
 
@@ -40,15 +38,15 @@ Route::group(['prefix'=>'user','controller'=>UserController::class
 ],(function(){
 
     Route::get('register', 'create');
-    Route::get('login', 'login')->name('/login');
-    Route::get('index', 'index')->middleware('auth');
-
+    Route::get('login', 'login')->name('user.login');
+    Route::get('index', 'index')->name('user.index')
+                                ->middleware(['auth','userStatus']);
 }));
 
-// dispachers routes
-Route::group(['prefix'=>'dispatcher','controller'=> dispatcherAuth::class,
+// Dispachers routes
+Route::group(['prefix'=>'dispatcher','controller'=> DispatcherAuth::class,
 ],(function(){
-      
+
     Route::post('register', 'register');
     Route::post('/login', 'login');
     Route::post('/logout', 'logout');
@@ -56,45 +54,44 @@ Route::group(['prefix'=>'dispatcher','controller'=> dispatcherAuth::class,
 
 Route::group(['prefix'=>'dispatcher', 'controller'=> DispatcherController::class
 ],(function(){
+
     Route::get('register','create');
     Route::get('login','login')->name('dispatcher.login');
-    Route::get('index','index')->middleware('dispatcher');
-    // notification activities
+    Route::get('index','index')->name('dispatcher.index')
+                               ->middleware(['dispatcher','dispatcherStatus']);
+    // Notification activities
     Route::get('/accepted/{notification}','accepted');
     Route::get('/declined/{orderId}/{userId}/{dispatcherId}','declined');
     Route::get('/delivered/{notification}','delivered');
-
 }));
 
 
-// admin routes
-Route::group(['prefix'=>'admin', 'controller'=> adminAuth::class
+// Admin routes
+Route::group(['prefix'=>'admin', 'controller'=> AdminAuth::class
 ],(function(){
+
     Route::post('register', 'register');
-    Route::post('/login', 'login')->middleware('adminStatus');
+    Route::post('/login', 'login');
     Route::post('/logout', 'logout');
 }));
 
 Route::group(['prefix'=>'admin','controller'=>AdminController::class,
-'middleware'=>'admin'],(function(){
-    Route::get('register', 'create')->withoutMiddleware('admin');
-    Route::get('login', 'login')->name('/admin')
-                                ->withoutMiddleware('admin');
-    Route::get('index', 'index');
+'middleware'=>['admin','adminStatus']],(function(){
 
-    // user activities
+    Route::get('register', 'create')->withoutMiddleware(['admin','adminStatus']);
+    Route::get('login', 'login')->name('admin.login')
+                                ->withoutMiddleware(['admin','adminStatus']);
+    Route::get('index', 'index')->name('admin.index');
+
+    // User activities
     Route::get('users', 'userIndex');
     Route::get('users/show/{user}','showUser');
-    Route::get('users/restore/{id}','restoreUser');
-    Route::get('users/destroy_permanently/{id}','destroyPermanently');
     Route::put('users/ban/{id}','ban');
     Route::put('users/release/{id}','release');
     Route::delete('users/destroy/{user}','deleteUser');
-    // dispatchers activities
+    // Dispatchers activities
     Route::get('dispatchers', 'dispatcherIndex');
     Route::get('dispatchers/show/{dispatcher}','showDispatcher');
-    Route::get('dispatchers/restore/{id}','restoreDispatcher');
-    Route::get('dispatchers/destroy_permanently/{id}','destroyDispatcher');
     Route::put('dispatchers/ban/{id}','banDispatcher');
     Route::put('dispatchers/release/{id}','releaseDispatcher');
     Route::delete('dispatchers/destroy/{dispatcher}','deleteDispatcher');
@@ -104,10 +101,9 @@ Route::group(['prefix'=>'admin','controller'=>AdminController::class,
     Route::put('admins/ban/{id}','banAdmin');
     Route::put('admins/release/{id}','releaseAdmin');
     Route::delete('admins/destroy/{admin}','deleteAdmin');
-    // orders
+    // Orders
     Route::get('orders','orderIndex');
     Route::get('orders/{order}','orderShow');
-
 }));
 
 Route::resource('/orders', OrderController::class)->only([

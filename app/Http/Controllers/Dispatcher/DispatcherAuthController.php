@@ -31,19 +31,9 @@ class DispatcherAuthController extends Controller
     
     public function login(Request $request)
     {
-        $dispatcher = Dispatcher::whereEmail($request->email)->first();
-        if($dispatcher == null){
-            return back()->withErrors(['email'=>'dispatcher credentials not found'])
-            ->onlyInput('email');
-        }else if($dispatcher->status ){
-            return back()->withErrors([
-               'email'=>'Your account was banned on '
-               .$dispatcher->updated_at->toDayDateTimeString().' contact the admin for more info' ])
-                     ->onlyInput('email');
-        }
-            else if(Auth::guard('dispatcher')->attempt($request->only('email','password'))){
+        if(Auth::guard('dispatcher')->attempt($request->only('email','password'))){
             $request->session()->regenerate();
-            return redirect('/dispatcher/index');
+            return redirect()->route('dispatcher.index');
         }
         return back()->withErrors(['email'=>'dispatcher credentials not found'])
                      ->onlyInput('email');

@@ -44,11 +44,9 @@ class AdminController extends Controller
                      ->get();
         $banned_users = User::whereStatus(true)
                             ->get();
-        $deleted_users = User::onlyTrashed()->get();
         return view('admin.users.user_index',[
         'users'=>$users, 
-        'bannedUsers'=>$banned_users,
-        'deletedUsers'=>$deleted_users,
+        'bannedUsers'=>$banned_users
         ]);
 
     }
@@ -65,22 +63,7 @@ class AdminController extends Controller
         return back();
     }
 
-    public function restoreUser($id)
-    {
-        User::withTrashed()
-            ->filter($id)
-            ->restore();
-        return back();
-    }
-
-    public function destroyPermanently($id)
-    {
-        User::withTrashed()
-            ->filter($id)
-            ->forceDelete();
-        return back();
-    }
-
+   
     
     public function ban($id)
     {
@@ -102,11 +85,9 @@ class AdminController extends Controller
     { 
         $dispatchers = dispatcher::whereStatus(false)->get();
         $banned_dispatchers = dispatcher::whereStatus(true)->get();
-        $deleted_dispatchers = dispatcher::onlyTrashed()->get();
         return view('admin.dispatchers.dispatcher_index',[
         'dispatchers'=>$dispatchers, 
-        'banneddispatchers'=>$banned_dispatchers,
-        'deleteddispatchers'=>$deleted_dispatchers,
+        'banneddispatchers'=>$banned_dispatchers
     ]);
 
     }
@@ -121,23 +102,8 @@ class AdminController extends Controller
     public function deleteDispatcher(dispatcher $dispatcher)
     {
         $dispatcher->delete();
-        return back()->with('msg', $dispatcher->name.' is deleted');
-    }
-
-    public function restoreDispatcher($id)
-    {
-        dispatcher::withTrashed()
-                  ->filter($id)
-                  ->restore();
-        return back();
-    }
-
-    public function destroyDispatcher($id)
-    {
-        dispatcher::withTrashed()
-                  ->filter($id)
-                  ->forceDelete();
-        return back();
+        return back()->with('msg',
+        $dispatcher->name.' is deleted');
     }
 
     

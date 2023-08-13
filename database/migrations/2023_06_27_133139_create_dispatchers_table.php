@@ -20,7 +20,6 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->bigInteger('phone_number');
             $table->boolean('status')->default(false);
-            $table->softDeletes();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
@@ -33,7 +32,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('dispatchers');
-        Schema::dropSoftDeletes();
 
     }
 };

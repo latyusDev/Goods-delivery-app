@@ -60,7 +60,7 @@ class Admin extends Authenticatable
     
     public function address()
     {
-        return $this->morphTo();
+        return $this->morphOne(Address::class,'addressable');
     }
 }
 

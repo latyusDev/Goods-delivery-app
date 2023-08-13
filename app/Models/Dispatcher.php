@@ -53,7 +53,7 @@ class Dispatcher extends Authenticatable
         );
     }
 
-    public function scopeFilter($query, $id)
+    public function scopeFilter($query,$id)
     {
         return $query->whereId($id);
     }

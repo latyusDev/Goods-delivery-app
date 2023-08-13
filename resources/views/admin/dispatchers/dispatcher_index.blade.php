@@ -7,7 +7,6 @@
                 <p>{{$dispatcher->email}}</p>
                 <p>{{$dispatcher->phone_number}}</p>
 
-                
                 <div class="self-center">
                     <form action="/admin/dispatchers/destroy/{{$dispatcher->id}}" method="post" >
                     @method('DELETE')
@@ -23,8 +22,6 @@
                      <button type="submit">Ban</button>
                     </form>
                 </div>
-
-                
 
                 <div>
                    <a href="/admin/dispatchers/show/{{$dispatcher->id}}">check</a>
@@ -49,37 +46,11 @@
                          @csrf
                          <button type="submit">Release</button>
                         </form>
-                    </div>
-                    <div>
-                        <a href="/admin/dispatchers/destroy_permanently/{{$dispatcher->id}}">Delete permanently</a>
-                     </div>
-    
-                   
+                    </div>  
                 </div>
             @empty
                 <p class="text-center">No dispatcher is banned</p>
             @endforelse
        </div>
 
-       <h1 class="font-bold text-center my-10 text-xl">Deleted dispatchers</h1>
-        <div class="flex justify-center flex-col ">
-            @forelse ($deleteddispatchers as $dispatcher)
-            <div class="flex justify-evenly ">
-                <p>{{$dispatcher->fullname}}</p>
-                    <p>{{$dispatcher->email}}</p>
-                    <p>{{$dispatcher->phone_number}}</p>
-
-                    
-                    <div>
-                        <a href="/admin/dispatchers/destroy_permanently/{{$dispatcher->id}}">Delete permanently</a>
-                     </div>
-    
-                    <div>
-                       <a href="/admin/dispatchers/restore/{{$dispatcher->id}}">Restore dispatcher</a>
-                    </div>
-                </div>
-            @empty
-                <p class="text-center">No dispatcher is deleted</p>
-            @endforelse
-       </div>
 </x-adminLayout>

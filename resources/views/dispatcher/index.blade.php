@@ -31,10 +31,6 @@
                <p>you don't have an order</p>
     @endforelse
      
-            
-     {{-- {!!
-     $notification->status == 'pending' ? ' <li><a href="/dispatcher/accept/{{$notification->id}}">Accept</a></li>
-     <li><a href="/decline">Decline</a></li> ' : ' <li><a href="/decline">Delivered</a></li> '
-      !!} --}}
+  
     </section>
 </x-dispatcherLayout>

@@ -2,13 +2,13 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Admin;
+use App\Models\Dispatcher;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class AdminStatusMiddleware
+class DispatcherStatusMiddleware
 {
     /**
      * Handle an incoming request.
@@ -17,19 +17,18 @@ class AdminStatusMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $admin = Admin::whereEmail(Auth::guard('admin')->user()->email)
-                      ->first();
-        if($admin->status)
+        $dispatcher = Dispatcher::whereEmail(Auth::guard('dispatcher')->user()->email)
+                                ->first();
+
+        if($dispatcher->status)
         {
-            Auth::guard('admin')->logout();
-            return redirect()->route('admin.login')->withErrors(['email'=>'Your account was banned on '
-                   .$admin->updated_at-> toDayDateTimeString().
-                   ' contact the Manager for more info'])
+            Auth::guard('dispatcher')->logout();
+            return redirect()->route('dispatcher.login')->withErrors(['email'=>'Your account was banned on '
+                   .$dispatcher->updated_at-> toDayDateTimeString().
+                   ' contact the Admin for more info'])
                           ->onlyInput('email');
-         
         }
 
         return $next($request);
-         
     }
 }

@@ -14,9 +14,6 @@ class Notification extends Model
         'dispatcher_id','status'
     ];
     
-    public static $accepted = 'accepted';
-    public static $delivered = 'delivered';
-
     public function scopeFilter($query,$id)
     {
         return $query->whereId($id);
@@ -32,6 +29,7 @@ class Notification extends Model
         return $this->belongsTo(Dispatcher::class);
     }
 
+    
     public function updateDispatcherStatus($orderId,$dispatcherId)
     {
         Notification::where([

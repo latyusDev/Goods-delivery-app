@@ -26,28 +26,15 @@ class UserAuthController extends Controller
         $address['addresable_id'] = $user->id;
         Address::create($address);
         Auth::login($user);
-
-        return redirect('/user/index');
-      
+        return redirect()->route('user.index');
     }
     
     public function login(Request  $request)
     {
-
-        $user = User::whereEmail($request->email)->first();
-        if($user == null){
-            return back()->withErrors(['email'=>'dispatcher credentials not found'])
-            ->onlyInput('email');
-        }
-       else if($user->status){
-             return back()->withErrors([
-                'email'=>'Your account was banned on '
-                .$user->updated_at->toDayDateTimeString().' contact the admin for more info' ])
-                      ->onlyInput('email');
-        }
-       else if(Auth::guard('web')->attempt($request->only(['email','password']))){
+       if(Auth::guard('web')->attempt($request->only(['email','password'])))
+       {
          $request->session()->regenerate();
-         return redirect('/user/index');
+         return redirect()->route('user.index');
         }
         return back()->withErrors(['email'=>'User credentials not found'])
                      ->onlyInput('email');
@@ -57,7 +44,8 @@ class UserAuthController extends Controller
     {
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/user/login')->with('msg', 'You are Logged out');
+        return redirect()->route('user.login')
+                         ->with('msg', 'You are Logged out');
     }
 
 }
