@@ -10,10 +10,12 @@
     @forelse ($notifications as $notification)
           
       @if ($notification->status=='pending'||$notification->status=='accepted')
-          
-            <ul @style('display:flex; list-style:none; justify-content:center; gap:1rem; border:1px solid red')>
-              <li>{{$notification->order->name}}</li>
-              <li>{{$notification->order->state}}</li>
+            <h2>{{$notification->status=='accepted'?'User Details':''}}</h2>
+            <ul @style('display:flex; list-style:none; justify-content:center; gap:1rem; ')>
+              <li>Mobile number: {{"+".$notification->order->user->country_code}}
+              {{$notification->order->user->phone_number }}; </li>  
+              <li>Load: {{$notification->order->name}};</li>
+              <li>Destination: {{$notification->order->state}}</li>
               <li>{{$notification->order->local_government}}</li>
               <li>{{$notification->order->destination}}</li>
           @if ($notification->status === 'pending')

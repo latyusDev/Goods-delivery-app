@@ -22,8 +22,8 @@
                         @if($notification->status=='accepted')
                             <p>{{$notification->dispatcher->fullname}} </p>    
                             <p>{{$notification->dispatcher->email}} </p>    
-                            <p>{{$notification->dispatcher->phone_number'+'$notification->dispatcher->country_code}} </p>  
-                        @endif
+                            <p>Mobile number: {{"+".$notification->dispatcher->country_code}}
+                                {{$notification->dispatcher->phone_number }}; </p>                        @endif
                     @endforeach                   
                 </div>
             </div>

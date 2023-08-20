@@ -1,7 +1,7 @@
 <div class="flex justify-evenly">
     <p>{{$admin->fullname}}</p>
     @includeWhen($admin->is_manager,'admin.includes.manager')
-    <p>{{$admin->phone_number}}</p>
+    <p> <span>+{{$admin->country_code}}</span> <span>{{$admin->phone_number}}</span></p>
     <p>{{$admin->email}}</p>
     @php
         Auth::shouldUse('admin')

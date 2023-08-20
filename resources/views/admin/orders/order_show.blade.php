@@ -16,7 +16,8 @@
                 <ul class="flex justify-evenly mt-9">
                 <li>{{$order->user->fullname}}</li>
                 <li>{{$order->user->email}}</li>
-                <li>{{$order->user->phone_number}}</li>
+                <li>{{"+".$order->user->country_code}}
+                    {{$order->user->phone_number }}; </li> 
                     
                 </ul>
 
@@ -43,16 +44,21 @@
                    @endif
                    <li>
                     <div class="text-center">
-                        <p>{{$notification->dispatcher->fullname??' No dipatcher is available for this Order'}}</p>
-                       
-                    </div>
-                </li>
-                   <li>{{$notification->dispatcher->email??''}}</li>
-                   <li>{{$notification->dispatcher->phone_number??''}}</li>
-                    
+                        {{-- if dispatcher is available --}}
+             @if ($notification->dispatcher)
+                 <p>{{$notification->dispatcher->fullname??' No dipatcher is available for this Order'}}</p>
+                    <li>{{$notification->dispatcher->email}}</li>
+                    <li>{{$notification->dispatcher->phone_number}}</li>
+                    <li>{{$notification->dispatcher->email}}</li>
+                    <li><span>{{"+".$notification->dispatcher->country_code}}</span>
+                 <span>{{$notification->dispatcher->phone_number}}</span>; </li>
+                @else
+                        <p>No dispatcher is available for this Order</p>
+                @endif
+            </div>
                 </ul>
                     @empty
-                        
+                        <p>none</p>
                     @endforelse
                </div>
 

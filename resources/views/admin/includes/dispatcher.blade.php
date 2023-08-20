@@ -1,8 +1,7 @@
 <div class="flex justify-evenly ">
     <p>{{$dispatcher->fullname}}</p>
         <p>{{$dispatcher->email}}</p>
-        <p>{{$dispatcher->phone_number}}</p>
-
+        <p> <span>+{{$dispatcher->country_code}}</span> <span>{{$dispatcher->phone_number}}</span></p>
         <div class="self-center">
             <form action="/admin/dispatchers/destroy/{{$dispatcher->id}}" method="post" >
                 @method('DELETE')

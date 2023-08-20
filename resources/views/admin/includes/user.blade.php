@@ -1,7 +1,7 @@
 <div class="flex justify-evenly ">
     <p>{{$user->fullname}}</p>
         <p>{{$user->email}}</p>
-        <p>{{$user->phone_number}}</p>
+        <p> <span>+{{$user->country_code}}</span> <span>{{$user->phone_number}}</span></p>
         <div class="self-center">
             <form action="/admin/users/destroy/{{$user->id}}" method="post" >
             @method('DELETE')

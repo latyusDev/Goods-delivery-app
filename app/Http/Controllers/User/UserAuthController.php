@@ -14,11 +14,12 @@ class UserAuthController extends Controller
 {
     public function register(UserRegisterRequest $request)
     {
-        $userDetails = $request->only( ['first_name','last_name','email',
+        $userDetails = $request->only(['first_name','last_name','email',
                                             'phone_number', 'password']);
         $userDetails['password'] = Hash::make($userDetails['password']);
         $user = User::create($userDetails);
-        $address = $request->except($this->data());
+        $address = $request->except(['first_name','last_name','email',
+                                    'phone_number', 'password']);
         $address['addresable_type'] = User::class;
         $address['addresable_id'] = $user->id;
         Address::create($address);

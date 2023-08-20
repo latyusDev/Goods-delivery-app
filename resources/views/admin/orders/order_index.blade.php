@@ -9,6 +9,8 @@
                         <p>{{$order->local_government}}</p>
                         <p>{{$order->destination}}</p>
                         <p>{{$order->phone_number}}</p>
+                        <p>{{"+".$order->user->country_code}}
+                            {{$order->user->phone_number }}; </p> 
                         <p>{{$order->price}}</p>
                         <p>{{$order->weight}}</p>
                         <span><a href="orders/{{$order->id}}">details</a></span>
