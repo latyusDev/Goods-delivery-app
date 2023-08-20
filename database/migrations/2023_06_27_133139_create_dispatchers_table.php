@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('email')->unique();
             $table->bigInteger('phone_number');
+            $table->unsignedInteger('country_code')->default(234);
             $table->boolean('status')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

@@ -1,7 +1,6 @@
 @props(['url'])
 <form action={{$url}} method="post">
     @csrf
-    
     <div>
         <label for="">First Name</label>
     <input value="{{old('first_name')}}" type="text" name="first_name">

@@ -29,33 +29,41 @@ class Notification extends Model
         return $this->belongsTo(Dispatcher::class);
     }
 
-    
-    public function updateDispatcherStatus($orderId,$dispatcherId)
+    public function updateDispatcherStatus($orderId,$dispatcherId):void
     {
         Notification::where([
             'order_id'=>$orderId,
             'dispatcher_id'=>$dispatcherId
         ])->update(['status'=>'declined']);
 
-        return null;
     }
 
-    public function newNotification($dispatcher,$userId,$orderId)
+    private function orderOwner($userId)
+    {
+        return User::find($userId)->id;
+    }
+
+    public function newNotification($dispatcher,$userId,$orderId):void
     {
         Notification::create([
             'dispatcher_id'=>$dispatcher->id??0,
-            'user_id'=>User::find($userId)->id,
+            'user_id'=>$this->orderOwner($userId),
             'status'=>$dispatcher?'pending':'declined',
             'order_id'=>$orderId
         ]);
-        return null;
     }
 
-    public function updateNotificationStatus($id,$value)
+    public function updateNotificationStatus($id,$value):void
     {
         $this->filter($id)
              ->update(['status'=>$value]);
-        return null;
+    }
+
+    public function delivered($notification)
+    {
+        $this->updateNotificationStatus($notification->id,'delivered');
+        $this->dispatcher()->whereId($notification->dispatcher->id)
+                           ->update(['is_available'=>true]);//update dispatcher availability
     }
 
 }

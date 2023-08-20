@@ -48,18 +48,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
     
-    public function fullName() : Attribute
-    {
-        return new Attribute(
-            get : fn() => $this->first_name.' '.$this->last_name,
-        );
-    }
-
-    public function scopeFilter($query, $id)
-    {
-        return $query->whereId($id);
-    }
-
+    
+    
     public function address()
     {
          return $this->morphOne(Address::class,'addresable');
@@ -69,9 +59,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
-
+    
     public function notification()
     {
         return $this->hasManyThrough(Notification::class, Order::class);
+    }
+
+    public function fullName() : Attribute
+    {
+        return new Attribute(
+            get : fn() => $this->first_name.' '.$this->last_name,
+        );
+    }
+    
+    public function scopeFilter($query, $id)
+    {
+        return $query->whereId($id);
+    }
+
+    public function updateUserStatus($userId,$value):void
+    {
+        $this->filter($userId)
+             ->update(['status'=>$value]);
     }
 }

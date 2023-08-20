@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminAuthController as AdminAuth;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminDestroyController;
+use App\Http\Controllers\Admin\AdminUpdateController;
 use App\Http\Controllers\Dispatcher\DispatcherAuthController as DispatcherAuth;
 use App\Http\Controllers\Dispatcher\DispatcherController;
 use App\Http\Controllers\Order\OrderController;
@@ -34,14 +36,19 @@ Route::group(['prefix'=>'user','controller'=>UserAuth::class
 }));
 
 
-Route::group(['prefix'=>'user','controller'=>UserController::class
+Route::group(['prefix'=>'user','as'=>'user.','controller'=>UserController::class
 ],(function(){
 
     Route::get('register', 'create');
-    Route::get('login', 'login')->name('user.login');
-    Route::get('index', 'index')->name('user.index')
+    Route::get('login', 'login')->name('login');
+    Route::get('index', 'index')->name('index')
                                 ->middleware(['auth','userStatus']);
 }));
+
+//user order routes
+Route::resource('/order', OrderController::class)->only([
+    'create', 'store'
+])->middleware(['auth','userStatus']);
 
 // Dispachers routes
 Route::group(['prefix'=>'dispatcher','controller'=> DispatcherAuth::class,
@@ -52,17 +59,18 @@ Route::group(['prefix'=>'dispatcher','controller'=> DispatcherAuth::class,
     Route::post('/logout', 'logout');
 }));
 
-Route::group(['prefix'=>'dispatcher', 'controller'=> DispatcherController::class
-],(function(){
+Route::group(['prefix'=>'dispatcher', 'as'=>'dispatcher.', 'middleware'=>['dispatcher',
+'dispatcherStatus'],'controller'=> DispatcherController::class],(function(){
 
-    Route::get('register','create');
-    Route::get('login','login')->name('dispatcher.login');
-    Route::get('index','index')->name('dispatcher.index')
-                               ->middleware(['dispatcher','dispatcherStatus']);
+    Route::withoutMiddleware(['dispatcher','dispatcherStatus'])->group(function(){
+         Route::get('register','create');
+         Route::get('login','login')->name('login');
+    });
+    Route::get('index','index')->name('index');
     // Notification activities
-    Route::get('/accepted/{notification}','accepted');
-    Route::get('/declined/{orderId}/{userId}/{dispatcherId}','declined');
-    Route::get('/delivered/{notification}','delivered');
+    Route::patch('/accepted/{notification}','accepted');
+    Route::patch('/declined/{orderId}/{userId}/{dispatcherId}','declined');
+    Route::patch('/delivered/{notification}','delivered');
 }));
 
 
@@ -75,37 +83,40 @@ Route::group(['prefix'=>'admin', 'controller'=> AdminAuth::class
     Route::post('/logout', 'logout');
 }));
 
-Route::group(['prefix'=>'admin','controller'=>AdminController::class,
-'middleware'=>['admin','adminStatus']],(function(){
+Route::group(['prefix'=>'admin','as'=>'admin.','middleware'=>['admin','adminStatus']],
+function(){
+    Route::controller(AdminController::class)->group(function(){
 
-    Route::get('register', 'create')->withoutMiddleware(['admin','adminStatus']);
-    Route::get('login', 'login')->name('admin.login')
-                                ->withoutMiddleware(['admin','adminStatus']);
-    Route::get('index', 'index')->name('admin.index');
+        Route::withoutMiddleware(['admin','adminStatus'])->group(function(){
+            Route::get('register', 'create');
+            Route::get('login', 'login')->name('login');
+        });
+        Route::get('index', 'index')->name('index');
+        // User activities
+        Route::get('users', 'userIndex');
+        Route::get('users/show/{user}','showUser');
+        // Dispatchers activities
+        Route::get('dispatchers', 'dispatcherIndex');
+        Route::get('dispatchers/show/{dispatcher}','showDispatcher');
+        // Admins
+        Route::get('admins', 'adminIndex');
+        Route::get('admins/show/{admin}','showAdmin');
+        Route::get('orders','orderIndex');
+        Route::get('orders/{order}','orderShow');
+    });
+    // user,dispatchers and admin
+    Route::controller(AdminDestroyController::class)->group(function(){
+        Route::delete('users/destroy/{user}','deleteUser');
+        Route::delete('dispatchers/destroy/{dispatcher}','deleteDispatcher');
+        Route::delete('admins/destroy/{admin}','deleteAdmin');
+    });
 
-    // User activities
-    Route::get('users', 'userIndex');
-    Route::get('users/show/{user}','showUser');
-    Route::put('users/ban/{id}','ban');
-    Route::put('users/release/{id}','release');
-    Route::delete('users/destroy/{user}','deleteUser');
-    // Dispatchers activities
-    Route::get('dispatchers', 'dispatcherIndex');
-    Route::get('dispatchers/show/{dispatcher}','showDispatcher');
-    Route::put('dispatchers/ban/{id}','banDispatcher');
-    Route::put('dispatchers/release/{id}','releaseDispatcher');
-    Route::delete('dispatchers/destroy/{dispatcher}','deleteDispatcher');
-    // Admins
-    Route::get('admins', 'adminIndex');
-    Route::get('admins/show/{admin}','showAdmin');
-    Route::put('admins/ban/{id}','banAdmin');
-    Route::put('admins/release/{id}','releaseAdmin');
-    Route::delete('admins/destroy/{admin}','deleteAdmin');
-    // Orders
-    Route::get('orders','orderIndex');
-    Route::get('orders/{order}','orderShow');
-}));
-
-Route::resource('/orders', OrderController::class)->only([
-    'index', 'create', 'store'
-]);
+    Route::controller(AdminUpdateController::class)->group(function(){
+        Route::patch('users/ban/{user}','banUser');
+        Route::patch('users/release/{user}','releaseUser');
+        Route::patch('dispatchers/ban/{dispatcher}','banDispatcher');
+        Route::patch('dispatchers/release/{dispatcher}','releaseDispatcher');
+        Route::patch('admins/ban/{admin}','banAdmin');
+        Route::patch('admins/release/{admin}','releaseAdmin');
+    });
+});

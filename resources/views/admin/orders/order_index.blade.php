@@ -1,4 +1,4 @@
-<x-adminLayout>
+<x-admin_layout>
     <div class="flex justify-center flex-col">
         @forelse ($orders as $order)
         
@@ -18,4 +18,4 @@
         @endforelse
 
        
-</x-adminLayout>
+</x-admin_layout>

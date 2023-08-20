@@ -15,12 +15,12 @@ class AdminAuthController extends Controller
 
     public function register(AdminRegisterRequest $request)
     {
-        $admin_detail = $request->only(['first_name','last_name','email',
-        'phone_number','password']);
-        $admin_detail['password'] = Hash::make($admin_detail['password']);
-        $admin = Admin::create($admin_detail);
-        $address = $request->except(['first_name','last_name','email',
-        'phone_number','password']);
+        $adminDetail = $request->safe()->only(['first_name','last_name','email',
+                                             'phone_number','password' ]);
+        $adminDetail['password'] = Hash::make($adminDetail['password']);
+        $admin = Admin::create($adminDetail);
+        $address = $request->safe()->except(['first_name','last_name','email',
+                                             'phone_number','password' ]);
         $address['addresable_type'] = Admin::class;
         $address['addresable_id'] = $admin->id;
         Address::create($address);
@@ -47,4 +47,5 @@ class AdminAuthController extends Controller
         return redirect()->route('admin.login')->with('msg', 'You are Logged out');
     }
 
+  
 }

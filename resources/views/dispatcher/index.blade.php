@@ -1,4 +1,4 @@
-<x-dispatcherLayout>
+<x-dispatcher_layout>
     <section @style('text-align:center')>
         
         <h1 @style('padding-top:10rem')>Welcome back {{Auth::guard('dispatcher')
@@ -17,10 +17,23 @@
               <li>{{$notification->order->local_government}}</li>
               <li>{{$notification->order->destination}}</li>
           @if ($notification->status === 'pending')
-              <li><a href="accepted/{{$notification->id}}">Accept</a></li>
-              <li><a href="declined/{{$notification->order_id}}/{{$notification->user_id}}/{{$notification->dispatcher_id}}">Decline</a></li> 
+              <form action="accepted/{{$notification->id}}" method="post">
+                @method('PATCH')
+                  @csrf
+                  <button type="submit">Accept</button>
+              </form>
+
+              <form action="declined/{{$notification->order_id}}/{{$notification->user_id}}/{{$notification->dispatcher_id}}" method="post">
+                  @csrf
+                  @method('PATCH')
+                  <button type="submit">Decline</button>
+              </form>
           @else
-              <li><a href="delivered/{{$notification->id}}">Delivered</a></li> 
+          <form action="delivered/{{$notification->id}}" method="post">
+                @csrf
+                @method('PATCH')
+                <button type="submit">Deliver</button>
+          </form>
             </ul>
           @endif
       @else
@@ -33,4 +46,4 @@
      
   
     </section>
-</x-dispatcherLayout>
+</x-dispatcher_layout>

@@ -1,9 +1,9 @@
-<x-dispatcherLayout>
+<x-dispatcher_layout>
 <section>
 
 <h1>Dispatcher Sign Up</h1>
-<x-registerForm  url="/dispatcher/register"/>
+<x-register_form  url="/dispatcher/register"/>
 <p> Already have an account ? <a href="/dispatcher/login">Sign In</a> </p> 
 
 </section>
-</x-dispatcherLayout>
+</x-dispatcher_layout>

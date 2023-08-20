@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
@@ -13,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Dispatcher extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -53,6 +52,7 @@ class Dispatcher extends Authenticatable
         );
     }
 
+
     public function scopeFilter($query,$id)
     {
         return $query->whereId($id);
@@ -68,7 +68,7 @@ class Dispatcher extends Authenticatable
         return $this->hasMany(Notification::class);
     }
 
-    public function order($orderId)
+    private function order($orderId)
     {
         return Order::find($orderId)
                     ->user->address
@@ -84,10 +84,10 @@ class Dispatcher extends Authenticatable
         return $dispatchers_id;
     }
 
-
     public function AvailableDispatcher($orderId)
     {
-        $AvailableDispatcher = Dispatcher::whereHas('address',function($query)use($orderId)
+        $AvailableDispatcher = Dispatcher::whereHas('address',
+        function($query)use($orderId)
         {
             return $query->where([
                   'is_available'=>true,
@@ -106,22 +106,10 @@ class Dispatcher extends Authenticatable
         return $new_dispatcher;
     }
 
-    public function updateDispatchAvailability($dispatcherId,$value)
+    public function updateDispatcherAvailability($dispatcherId,$value,$field):void
     {
         $this->filter($dispatcherId)
-             ->update(['is_available'=>$value]);
-        return null;
-    }
-
-    public function delivered($id)
-    {
-        Notification::filter($id)
-                    ->update(['status'=>'delivered']);
-        $this->updateDispatchAvailability(
-             Auth::guard('dispatcher')->id(),
-             true
-        );
-        return null;
+             ->update([$field=>$value]);
     }
   
 }

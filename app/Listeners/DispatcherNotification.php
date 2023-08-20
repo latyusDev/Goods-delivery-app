@@ -33,19 +33,13 @@ class DispatcherNotification
         auth()->user()->id,
         $event->order->id
     );//create new notification
-        // Notification::create([
-        //     'dispatcher_id'=>$selectedDispatcher->id??0,
-        //     'user_id'=>User::find($userId)->id,
-        //     'status'=>$dispatcher?'pending':'declined',
-        //     'order_id'=>$orderId
-        // ]);
        
-   
     $selectedDispatcher!==null?
-    $dispatcher->updateDispatchAvailability(
+    $dispatcher->updateDispatcherAvailability(
         $selectedDispatcher->id,
-        false
-    ):null;//updateDispatchAvailability
+        false,
+        'is_available'
+    ):null;//updateDispatcherAvailability
         
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+                    
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Dispatcher;
@@ -40,15 +40,10 @@ class AdminController extends Controller
     // user activities
     public function userIndex()
     { 
-        $users = User::whereStatus(false)
-                     ->get();
-        $banned_users = User::whereStatus(true)
-                            ->get();
+        $users = User::all();
         return view('admin.users.user_index',[
-        'users'=>$users, 
-        'bannedUsers'=>$banned_users
+                    'users'=>$users, 
         ]);
-
     }
 
 
@@ -57,39 +52,13 @@ class AdminController extends Controller
         return view('admin.users.user_show',['user'=>$user]);
     }
 
-    public function deleteUser(User $user)
-    {
-        $user->delete();
-        return back();
-    }
-
-   
-    
-    public function ban($id)
-    {
-        $user = User::filter($id);
-        $user->update(['status'=>true]);
-        return back();
-    }
-
-    public function release($id)
-    {
-        $user = User::filter($id);
-        $user->update(['status'=>false]);
-        return back();
-    }
-
     // dispatcher activities
-    
     public function dispatcherIndex()
     { 
-        $dispatchers = dispatcher::whereStatus(false)->get();
-        $banned_dispatchers = dispatcher::whereStatus(true)->get();
+        $dispatchers = dispatcher::all();
         return view('admin.dispatchers.dispatcher_index',[
-        'dispatchers'=>$dispatchers, 
-        'banneddispatchers'=>$banned_dispatchers
-    ]);
-
+                    'dispatchers'=>$dispatchers
+         ]);
     }
 
     public function showdispatcher(dispatcher $dispatcher)
@@ -97,28 +66,6 @@ class AdminController extends Controller
         return view('admin.dispatchers.dispatcher_show',[
             'dispatcher'=>$dispatcher
         ]);
-    }
-
-    public function deleteDispatcher(dispatcher $dispatcher)
-    {
-        $dispatcher->delete();
-        return back()->with('msg',
-        $dispatcher->name.' is deleted');
-    }
-
-    
-    public function banDispatcher($id)
-    {
-        $p = Dispatcher::filter($id);
-        $p->update(['status'=>true]);
-        return back();
-    }
-
-    public function releaseDispatcher($id)
-    {
-        $dispatcher = Dispatcher::filter($id);
-        $dispatcher->update(['status'=>false]);
-        return back();
     }
 
    // admin
@@ -133,24 +80,4 @@ class AdminController extends Controller
         return view('admin.admin_show',['admin'=>$admin]);
     }
 
-    public function deleteAdmin(Admin $admin)
-    {
-        $admin->delete();
-        return back();
-    }
-
-    
-    public function banAdmin($id)
-    {
-        $admin = Admin::filter($id);
-        $admin->update(['status'=>true]);
-        return back();
-    }
-
-    public function releaseAdmin($id)
-    {
-        $admin = Admin::filter($id);
-        $admin->update(['status'=>false]);
-        return back();
-    }
 }

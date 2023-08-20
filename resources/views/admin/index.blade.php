@@ -1,4 +1,4 @@
-<x-adminLayout>
+<x-admin_layout>
         <section @style('text-align:center')>
         
             <h1 @style('padding-top:10rem')>Welcome back {{Auth::guard('admin')->user()->fullname}}</h1>
@@ -13,4 +13,4 @@
             </div>
         </section>
        
-</x-adminLayout>
+</x-admin_layout>

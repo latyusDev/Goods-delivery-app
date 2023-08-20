@@ -14,18 +14,15 @@ class DispatcherAuthController extends Controller
 {
     public function register(DispatcherRegisterRequest $request)
     {
-        $dispatcher_detail = $request->only(['first_name','last_name','email',
-        'phone_number','password']);
+        $dispatcher_detail = $request->only($this->data());
         $dispatcher_detail['password'] = Hash::make($dispatcher_detail['password']);
-        $dispatcher = Dispatcher::create($request->only(['first_name','last_name','email',
-        'phone_number','password']));
+        $dispatcher = Dispatcher::create($request->only($this->data()));
         $address = $request->except(['first_name','last_name','email','password']);
         $address['addresable_type'] = dispatcher::class;
         $address['addresable_id'] = $dispatcher->id;
         Address::create($address);
-        
         Auth::guard('dispatcher')->login($dispatcher);
-        return redirect('/dispatcher/index');
+        return redirect()->route('dispatcher.index');
       
     }
     
@@ -44,8 +41,14 @@ class DispatcherAuthController extends Controller
        
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        return redirect()->route('dispatcher.login')
+                         ->with('msg', 'You are Logged out');
+    }
 
-        return redirect('/dispatcher/login')->with('msg', 'You are Logged out');
+    private function data()
+    {
+        return ['first_name','last_name','email',
+        'phone_number','password'];
     }
 
 }

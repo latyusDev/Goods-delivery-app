@@ -46,6 +46,12 @@ class Admin extends Authenticatable
         'password' => 'hashed',
     ];
 
+    
+    public function address()
+    {
+        return $this->morphOne(Address::class,'addressable');
+    }
+
     public function fullName() : Attribute
     {
         return new Attribute(
@@ -53,14 +59,15 @@ class Admin extends Authenticatable
         );
     }
     
-    public function scopeFilter($query, $id)
+    public function scopeFilter($query,$id)
     {
         return $query->whereId($id);
     }
-    
-    public function address()
+
+    public function updateAdminStatus($adminId,$value):void
     {
-        return $this->morphOne(Address::class,'addressable');
+        $this->filter($adminId)
+             ->update(['status'=>$value]);
     }
 }
 

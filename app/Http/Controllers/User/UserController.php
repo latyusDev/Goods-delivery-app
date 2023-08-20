@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -16,8 +17,8 @@ class UserController extends Controller
     public function index()
     {
         $orders = Order::with('notifications.dispatcher')
-                       ->filter(Auth::id())            
-                       ->Paginate(10);
+                       ->filter(Auth::id())->latest()            
+                                    ->Paginate(10);
         return view('user.index',['orders'=>$orders]);
     }
 

@@ -1,9 +1,9 @@
-<x-userLayout>
+<x-user_layout>
     <h1>
         Make an order
     </h1>
 
-    <form action="/orders" method="post">
+    <form action="/order" method="post">
         @csrf
         <div>
             <label >Name</label>
@@ -54,4 +54,4 @@
         <button type="submit">Order</button>
     </form>
     
-</x-userLayout>
+</x-user_layout>

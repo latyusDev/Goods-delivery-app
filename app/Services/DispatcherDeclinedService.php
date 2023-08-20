@@ -17,11 +17,20 @@ class DispatcherDeclinedService {
         $new_dispatcher = $this->dispatcher->newDispatcher($orderId);
         if($new_dispatcher){
             $this->notification->newNotification($new_dispatcher,$userId,$orderId);
-            $this->dispatcher->updateDispatchAvailability($new_dispatcher->id,false);
+            
+            $this->dispatcher->updateDispatcherAvailability(
+                $new_dispatcher->id,
+                false,
+                'is_available'
+            );
         }else{
             $this->notification->newNotification(0,$userId,$orderId);
         }
-        $this->dispatcher->updateDispatchAvailability($dispatcherId,true);
+        $this->dispatcher->updateDispatcherAvailability(
+            $dispatcherId,
+            true,
+            'is_available'
+        );
         return $new_dispatcher;
     } 
 }

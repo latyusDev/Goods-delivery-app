@@ -1,4 +1,4 @@
-<x-adminLayout>
+<x-admin_layout>
     <div class="mt-7">
         <h1 class="text-center text-2xl my-9" >Order Details</h1>
         <ul class="flex justify-evenly">
@@ -49,24 +49,16 @@
                 </li>
                    <li>{{$notification->dispatcher->email??''}}</li>
                    <li>{{$notification->dispatcher->phone_number??''}}</li>
-                    {{-- <li>{{$notification->local_government}}</li>
-                    <li>{{$notification->street}}</li>
-                    <li>{{$notification->number}}</li> --}}
+                    
                 </ul>
                     @empty
                         
                     @endforelse
                </div>
 
-                {{-- <h3 class="text-center text-2xl my-9">Dispatcher details</h3>
-                <ul class="flex justify-evenly">
-                    <li>{{$order->user->address->state}}</li>
-                    <li>{{$order->user->address->local_government}}</li>
-                    <li>{{$order->user->address->street}}</li>
-                    <li>{{$order->user->address->number}}</li>
-                </ul> --}}
+               
         </div>
 
         
     </div>
-</x-adminLayout>
+</x-admin_layout>

@@ -18,7 +18,7 @@ class DispatcherController extends Controller
     public function index()
     {
       $notification =  Auth::guard('dispatcher')
-                           ->user()->notifications()
+                           ->user()->notifications()->with('order')
                            ->latest()->take(1)->get();
         return view('dispatcher.index',['notifications'=>$notification]);
     }
@@ -35,15 +35,15 @@ class DispatcherController extends Controller
     }
 
     public function delivered(Notification $notification)
-    {
-        $notification->updateNotificationStatus($notification->id,'delivered');
-        return back();
+    {   
+        $notification->delivered($notification);
+        return back()->with('msg','Order delivered');
     }
 
     public function declined($orderId,$userId,$dispatcherId)
     {
         $declinedService = app(DispatcherDeclinedService::class);
         $declinedService->declined($orderId,$userId,$dispatcherId);
-        return back();
+        return back()->with('msg','Order declined');
     }
 }
